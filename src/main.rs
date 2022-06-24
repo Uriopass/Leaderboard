@@ -47,7 +47,11 @@ async fn main() {
 
     let app = create_router(db);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let port = std::env::var("PORT")
+        .ok()
+        .and_then(|x| x.parse().ok())
+        .unwrap_or(80);
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service_with_connect_info::<SocketAddr>())
