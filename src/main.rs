@@ -2,7 +2,7 @@ mod db;
 mod migrate;
 
 use crate::db::Database;
-use axum::extract::Query;
+use axum::extract::Path;
 use axum::{
     http::StatusCode,
     response::IntoResponse,
@@ -120,7 +120,7 @@ async fn create_score(
 /// get_scores is a handler for the GET /api/score/:game route.
 /// It returns a list of the first 10 scores for the given game, sorted by score descending.
 async fn get_scores(
-    Query(game): Query<String>,
+    Path(game): Path<String>,
     Extension(db): Extension<Database>,
 ) -> Json<Vec<GetScore>> {
     tracing::info!("get scores for {}", game);
@@ -224,7 +224,7 @@ mod tests {
         .into_response();
         assert_eq!(resp.status(), StatusCode::CREATED);
 
-        let mut resp = get_scores(Query("test".to_string()), db.clone()).await;
+        let mut resp = get_scores(Path("test".to_string()), db.clone()).await;
 
         assert!(resp.0[0].username.starts_with("player_"));
 
