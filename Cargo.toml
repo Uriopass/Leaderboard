@@ -16,3 +16,4 @@ r2d2_sqlite = { version = "0.20.0", features=["bundled"] }
 axum-client-ip = "0.2.0"
 include_dir = "0.7.2"
 anyhow = "1.0.32"
+tower-http = {version="0.3.4", features=["cors"]}

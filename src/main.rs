@@ -4,7 +4,7 @@ mod migrate;
 use crate::db::Database;
 use axum::extract::Path;
 use axum::{
-    http::StatusCode,
+    http::{StatusCode, Method},
     response::IntoResponse,
     routing::{get, post},
     Extension, Json, Router,
@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use std::net::SocketAddr;
+use tower_http::cors::CorsLayer;
 
 pub static MIGRATIONS: Dir = include_dir!("migrations");
 
@@ -64,7 +65,7 @@ fn create_router(db: Extension<Database>) -> Router {
 
     let cors = CorsLayer::new()
     .allow_methods(vec![Method::GET, Method::POST])
-    .allow_origin(any());
+    .allow_origin(tower_http::cors::Any);
 
     Router::new()
         .route("/api/score", post(create_score))
