@@ -101,7 +101,7 @@ async fn create_score(
     let mut stmt = client
         .prepare_cached(
             r#"
-            INSERT INTO scores (game, username, ip, score) VALUES (?1, ?2, ?3, ?4) ON CONFLICT (game, username) DO UPDATE SET score = ?4;
+            INSERT INTO scores (game, username, ip, score) VALUES (?1, ?2, ?3, ?4) ON CONFLICT (game, username) DO UPDATE SET score = ?4 WHERE ?4 > score;
         "#,
         )
         .unwrap();
@@ -203,6 +203,19 @@ mod tests {
                 game: "test".to_string(),
                 username: Some("test3".to_string()),
                 score: 3.0,
+            }),
+            db.clone(),
+            ClientIp(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1))),
+        )
+        .await
+        .into_response();
+        assert_eq!(resp.status(), StatusCode::CREATED);
+        
+        let resp = create_score(
+            Json(CreateScore {
+                game: "test".to_string(),
+                username: Some("test3".to_string()),
+                score: 1.0,
             }),
             db.clone(),
             ClientIp(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1))),
