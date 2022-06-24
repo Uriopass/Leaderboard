@@ -1,0 +1,18 @@
+[package]
+name = "leaderboard"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.5.9"
+serde = { version = "1.0.137", features=["derive"] }
+tokio = { version = "1.19.2", features=["macros", "rt-multi-thread"] }
+tracing-subscriber = "0.3.11"
+tracing = "0.1.35"
+r2d2 = "0.8.10"
+r2d2_sqlite = { version = "0.20.0", features=["bundled"] }
+axum-client-ip = "0.2.0"
+include_dir = "0.7.2"
+anyhow = "1.0.32"
