@@ -62,10 +62,15 @@ async fn main() {
 fn create_router(db: Extension<Database>) -> Router {
     migrate::migrate(&db.0, &MIGRATIONS).expect("could not run migrations");
 
+    let cors = CorsLayer::new()
+    .allow_methods(vec![Method::GET, Method::POST])
+    .allow_origin(any());
+
     Router::new()
         .route("/api/score", post(create_score))
         .route("/api/score/:game", get(get_scores))
         .layer(db)
+        .layer(cors)
 }
 
 /// create_score is a handler for the POST /api/score endpoint.
