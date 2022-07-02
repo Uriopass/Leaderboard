@@ -4,7 +4,7 @@ mod migrate;
 use crate::db::Database;
 use axum::extract::Path;
 use axum::{
-    http::{StatusCode, Method},
+    http::StatusCode,
     response::IntoResponse,
     routing::{get, post},
     Extension, Json, Router,
@@ -64,8 +64,9 @@ fn create_router(db: Extension<Database>) -> Router {
     migrate::migrate(&db.0, &MIGRATIONS).expect("could not run migrations");
 
     let cors = CorsLayer::new()
-    .allow_methods(vec![Method::GET, Method::POST])
-    .allow_origin(tower_http::cors::Any);
+        .allow_methods(tower_http::cors::Any)
+        .allow_headers(tower_http::cors::Any)
+        .allow_origin(tower_http::cors::Any);
 
     Router::new()
         .route("/api/score", post(create_score))
@@ -216,7 +217,7 @@ mod tests {
         .await
         .into_response();
         assert_eq!(resp.status(), StatusCode::CREATED);
-        
+
         let resp = create_score(
             Json(CreateScore {
                 game: "test".to_string(),
