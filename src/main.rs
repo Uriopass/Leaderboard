@@ -77,9 +77,9 @@ fn create_router(db: Extension<Database>) -> Router {
 
 /// create_score is a handler for the POST /api/score endpoint.
 async fn create_score(
-    Json(mut payload): Json<CreateScore>,
     Extension(db): Extension<Database>,
     ClientIp(ip): ClientIp,
+    Json(mut payload): Json<CreateScore>,
 ) -> impl IntoResponse {
     tracing::info!(
         "add score for {}: {} {} {:?}",
